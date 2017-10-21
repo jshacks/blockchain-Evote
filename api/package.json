@@ -1,0 +1,27 @@
+{
+  "name": "evote-server",
+  "version": "0.0.1",
+  "description": "Backend microservices for E-Vote",
+  "main": "index.js",
+  "scripts": {
+    "start": "micro",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jshacks/blockchain-Evote.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jshacks/blockchain-Evote/issues"
+  },
+  "homepage": "https://github.com/jshacks/blockchain-Evote#readme",
+  "dependencies": {
+    "big-integer": "^1.6.25",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "get-random-values": "^1.2.0",
+    "secure-random": "^1.1.1"
+  }
+}
