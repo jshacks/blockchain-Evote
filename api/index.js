@@ -105,16 +105,84 @@ app.post('/decrypt-tally', function(req, res) {
   });
 });
 
-app.get('/tally/:electionId/show-tally/', function(req, res) {
-  res.send("Sorry election not over yet");  
+app.get('/tally/:electionId/show-tally', function(req, res) {
+  // res.send("Sorry election not over yet");  
+
+  let electionId = req.params.electionId;
+
+  MongoClient.connect(url, function(err, db) {
+    // Save keys to database
+    if(err) (console.log(err))
+    var elections = db.collection('elections');
+    let election = elections.findOne({
+      electionId: electionId
+    }, function(e,r) {
+      if(!r) res.send("Inexistent election")
+
+      res.send({
+        result: election ? election.tally : []
+      });
+    });
+  });
+
 });
 
 app.get('/tally/:electionId/show-private-key', function(req, res) {
-  res.send("Sorry election not over yet");  
+  // res.send("Sorry election not over yet");  
+
+  let electionId = req.params.electionId;
+  
+  MongoClient.connect(url, function(err, db) {
+    // Save keys to database
+    if(err) (console.log(err))
+    var elections = db.collection('elections');
+    let election = elections.findOne({
+      electionId: electionId
+    }, function(e,r) {
+      if(!r) res.send("Inexistent election")
+      console.log(JSON.stringify(r.keys))
+      let keys = r.keys;
+
+      keys.pub.__proto__ = paillier.publicKey.prototype;
+      
+      keys.pub.n.__proto__ = BigInteger.prototype;
+      keys.pub.n2.__proto__ = BigInteger.prototype;
+      keys.pub.np1.__proto__ = BigInteger.prototype;
+
+      keys.sec.__proto__ = paillier.privateKey.prototype;
+      keys.sec.x.__proto__ = BigInteger.prototype;
+      keys.sec.lambda.__proto__ = BigInteger.prototype;
+      keys.sec.pubkey = keys.pub;
+  
+      res.send({
+        result: {
+          pub: keys.pub.n.toString(),
+          priv: keys.sec.lambda.toString() 
+        }
+      });
+    });
+  });
+    
 });
 
 app.get('/tally/:electionId/show-allowed-address-list', function(req, res) {
-  res.send("Sorry election not over yet");   
+   // res.send("Sorry election not over yet");  
+
+  let electionId = req.params.electionId;
+   
+  MongoClient.connect(url, function(err, db) {
+    if(err) (console.log(err))
+    var elections = db.collection('elections');
+    let election = elections.findOne({
+      electionId: electionId
+    }, function(e,r) {
+      if(!r) res.send("Inexistent election")
+
+      res.send({
+        result: election ? election.allowedAddresses : []        
+      });
+    });
+  });
 });
 
 app.listen(3000, function () {
