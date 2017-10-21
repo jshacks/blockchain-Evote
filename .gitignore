@@ -1,2 +1,7 @@
 # env
 .idea
+
+
+# database
+/database/data/*
+!/database/data/.keep
