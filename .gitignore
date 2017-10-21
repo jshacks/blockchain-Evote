@@ -5,3 +5,5 @@
 # database
 /database/data/*
 !/database/data/.keep
+
+/database/node_modules/
