@@ -2,8 +2,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const nbv = require("./jsbn/jsbn.js").nbv;
-
+const nbi = require("./jsbn/jsbn.js").nbi;
+const MongoClient = require('mongodb').MongoClient;
 const paillier = require("./jsbn/pailier.js").paillier;
+const BigInteger = require("./jsbn/jsbn.js").BigInteger;
+var url = 'mongodb://admin:pickwick@ds227045.mlab.com:27045/evote';
 
 app.use(bodyParser.json());
 
@@ -19,61 +22,99 @@ app.post('/encrypt-vote', function(req, res) {
 
   //get keypair
   const keys = paillier.generateKeys(numbits);
-
-
-  //search the election and find the maximum number of votes allowed
-
-  let maxAllowed = 1;
   let ks = {
     pub: keys.pub.n.toString(),
     priv: keys.sec.lambda.toString()
   }
+  MongoClient.connect(url, function(err, db) {
+    // Save keys to database
+    var elections = db.collection('elections');
+    elections.insert({
+      electionId: electionId,
+      keys: keys
+    }, function(e,r) {
+      //search the election and find the maximum number of votes allowed
+      if(e) {
+        console.log(e);
+        return;
+      } 
+      let maxAllowed = 1;
+      
 
-  //encrypting vote
-  let choices = [];
+      //encrypting vote
+      let choices = [];
 
-  let votes = vote.split('');
-  console.log(votes);
-  votes.forEach(function(v, idx) {
-    choices[idx] = keys.pub.encrypt(nbv(v));
+      let votes = vote.split('');
+
+      votes.forEach(function(v, idx) {
+        choices[idx] = keys.pub.encrypt(nbv(v));
+      });
+
+      //now add all cryptos
+      let final;
+      choices.forEach(function(c) {
+        if(!final) {
+          final = c;
+          return;
+        }
+        final = keys.pub.add(final,c);
+      });
+
+      let result = final.toString();
+
+      res.send({result});
+    });
   });
-
-  //now add all cryptos
-  let final;
-  choices.forEach(function(c) {
-    if(!final) {
-      final = c;
-      return;
-    }
-    final = keys.pub.add(final,c);
-  });
-
-  ks.final = final.toString();
-
-  ks.decrypted = keys.sec.decrypt(final).toString(10)
-
-  res.send(JSON.stringify(ks, null, 2));
+  
 });
 
 app.post('/decrypt-tally', function(req, res) {
   let vote = req.body.vote;
   let electionId = req.body.electionId;
-
-  let decrypted = keys.sec.decrypt(req.body.vote).toString(10)
+  let v = new BigInteger(vote,10);
   
-  res.send(decrypted);
+  MongoClient.connect(url, function(err, db) {
+    // Save keys to database
+    if(err) (console.log(err))
+    var elections = db.collection('elections');
+    let election = elections.findOne({
+      electionId: electionId
+    }, function(e,r) {
+      if(!r) res.send("Inexistent election")
+      console.log(JSON.stringify(r.keys))
+      let keys = r.keys;
+      keys.pub.__proto__ = paillier.publicKey.prototype;
+      
+      keys.pub.n.__proto__ = BigInteger.prototype;
+      keys.pub.n2.__proto__ = BigInteger.prototype;
+      keys.pub.np1.__proto__ = BigInteger.prototype;
+
+      keys.sec.__proto__ = paillier.privateKey.prototype;
+      keys.sec.x.__proto__ = BigInteger.prototype;
+      keys.sec.lambda.__proto__ = BigInteger.prototype;
+      keys.sec.pubkey = keys.pub;
+
+      v.__proto__ = BigInteger.prototype;
+
+      let decrypted = keys.sec.decrypt(v).toString(10);
+  
+      res.send({
+        result: decrypted
+      });
+    });
+  });
 });
 
 app.get('/tally/:electionId/show-tally/', function(req, res) {
-
+  res.send("Sorry election not over yet");  
 });
 
 app.get('/tally/:electionId/show-private-key', function(req, res) {
-
+  res.send("Sorry election not over yet");  
 });
 
 app.get('/tally/:electionId/show-allowed-address-list', function(req, res) {
-  
+  res.send("Sorry election not over yet");   
 });
 
 app.listen(3000, function () {

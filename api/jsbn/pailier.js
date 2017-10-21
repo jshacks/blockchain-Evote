@@ -11,7 +11,7 @@
 //
 ////////////////////////////////////////////////////////////////////////////////////
 const SecureRandom = require("./rng.js").SecureRandom;
-const BigInteger = require("./jsbn2.js").BigInteger;
+const BigInteger = require("./jsbn.js").BigInteger;
 
 function lcm(a,b) {
   return a.multiply(b).divide(a.gcd(b));
@@ -36,7 +36,7 @@ paillier = {
 		// x (cached) for decryption
 		this.x = pubkey.np1.modPow(this.lambda,pubkey.n2).subtract(BigInteger.ONE).divide(pubkey.n).modInverse(pubkey.n);
 	},
-	generateKeys: function(modulusbits) {
+	generateKeys: function(modulusbits, n) {
 		var p, q, n, keys = {}, rng = new SecureRandom();
 		do {
 			do {
