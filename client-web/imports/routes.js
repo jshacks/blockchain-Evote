@@ -13,8 +13,8 @@ export const renderRoutes = () => (
   <Router history={browserHistory}>
     <div>
       <Route exact path="/" component={Home}/>
-      <Route path="authorize" component={Authorize}/>
-      <Route path="vote" component={Vote}/>
+      <Route path="/authorize" component={Authorize}/>
+      <Route path="/vote" component={Vote}/>
     </div>
   </Router>
 );
