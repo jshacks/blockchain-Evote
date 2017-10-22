@@ -1,5 +1,5 @@
-const cryptoAPI = "https://jsonplaceholder.typicode.com";
+const cryptoAPI = "http://cryptovote.ml:3000";
 
 export default cryptoWS = {
-  test: cryptoAPI + '/posts/1'
+  credentials: cryptoAPI + '/credentials'
 };
