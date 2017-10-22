@@ -113,10 +113,10 @@ function initContract (choices, electionID, startDate, endDate, callback) {
                                                                 } else {
                                                                     console.log("Contract Address: ", contract.address) // the contract address
                                                                 
-
-                                                                    /* contract.vote.call(['choice-1', 'choice-2']);
-
-                                                                    console.log (contract.votes.getData(web3.eth.accounts[9])); */
+                                                                    contract.castVote.call(['choice-1-crypt', 'choice-2-crypt']);
+                                                                    contract.castVote.call(['choice-1-crypt', 'choice-2-crypt']);
+                                                                    console.log(contract.voters.length);
+                                                                    console.log ("Choices: ", contract.choices.length);
 
 
                                                                     callback(contract);

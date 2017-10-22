@@ -48,21 +48,28 @@ contract Election {
      *
      * Make `targetVoter` a voter named `voterName`
      *
-     * @param targetVoter ethereum address to be added
+     * 
      */
-    function addVoter(address targetVoter, bytes32[] _vote) internal {
+    // function addVoter(address targetVoter, bytes32[] _vote) internal {
        
-       Voter memory voter = Voter({ voterAddress: targetVoter, vote: _vote});
-        // voters.length++;
-        votes[targetVoter] = voter;
-        voters.push(voter);
+    //    Voter memory voter = Voter({ voterAddress: targetVoter, vote: _vote});
+    //     // voters.length++;
+    //     votes[targetVoter] = voter;
+    //     voters.push(voter);
         
-    }
+    // }
 
     
 
 
-    function castVote(bytes32[] choiceVote) public {
+    function castVote(bytes32[] choiceVote) public returns(bool success) {
+        Voter memory voter = Voter({ voterAddress: msg.sender, vote: choiceVote});
+        // voters.length++;
+        votes[msg.sender] = voter;
+        voters.push(voter);
+
+        return true;
+        
         // Voter memory voter = voters[msg.sender];
         // from docs: 
         // If the argument of `require` evaluates to `false`,
@@ -76,9 +83,8 @@ contract Election {
         // sender.hasVoted = true;
         // voter.vote = choiceVote;
 
-        addVoter(msg.sender, choiceVote);
+        // addVoter(msg.sender, choiceVote);
 
-        
     }
 
 
