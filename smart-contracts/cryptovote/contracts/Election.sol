@@ -87,5 +87,13 @@ contract Election {
 
     }
 
+    function getVoteCount() public constant returns(uint voteCount) {
+      return voters.length;
+  }
+
+    function getVoter(uint index) public returns(bytes32[] choices) {
+      return voters[index].vote;
+    }
+
 
 }
