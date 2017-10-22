@@ -11,7 +11,7 @@ export default class Vote extends Component {
     this.state = {
       stage        : 'not_started',
       publicKey    : null,
-      electionName : 'Name',
+      electionName : 'Frontend Framework',
       choices      : [],
       validChoices : 0
     };
@@ -32,25 +32,23 @@ export default class Vote extends Component {
     this.setState({
       stage        : 'vote',
       choices      : [{
-        id    : 1,
-        image : 'http://hubrif.com/pub/images/profiles/avatar-mini.jpg',
-        name  : 'Choice 1'
+        id   : 1,
+        name : 'AngularJS'
       }, {
-        id    : 2,
-        image : 'http://hubrif.com/pub/images/profiles/avatar-mini.jpg',
-        name  : 'Choice 2'
+        id   : 2,
+        name : 'EmberJS'
       }, {
-        id    : 3,
-        image : 'http://hubrif.com/pub/images/profiles/avatar-mini.jpg',
-        name  : 'Choice 3'
+        id   : 3,
+        name : 'Meteor'
       }, {
-        id    : 4,
-        image : 'http://hubrif.com/pub/images/profiles/avatar-mini.jpg',
-        name  : 'Choice 4'
+        id   : 4,
+        name : 'React'
       }, {
-        id    : 5,
-        image : 'http://hubrif.com/pub/images/profiles/avatar-mini.jpg',
-        name  : 'Choice 5'
+        id   : 5,
+        name : 'Vue'
+      }, {
+        id   : 5,
+        name : 'Build our own!!'
       }],
       validChoices : 1
     });
@@ -105,10 +103,11 @@ export default class Vote extends Component {
       position     : 'relative',
       marginBottom : '15px'
     };
+    const ChoicesStyle       = {
+      textAlign : 'left',
+      width     : 'auto'
+    };
     const ChoiceStyle        = {
-      width   : '100%',
-      padding : 0,
-      cursor  : 'pointer'
     };
 
     var choicesList = this.state.choices.map((choice, index) => {
@@ -155,7 +154,7 @@ export default class Vote extends Component {
         {this.state.stage === 'vote' && (
           <form>
             <div className="data" style={ElectionTitleStyle}>{this.state.electionName}</div>
-            <div>{choicesList}</div>
+            <div style={ChoicesStyle}>{choicesList}</div>
             <button type="submit" onClick={(e) => {
               this.submitVote(e);
             }}>Vote

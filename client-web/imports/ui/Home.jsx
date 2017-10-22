@@ -10,9 +10,13 @@ export default class Home extends Component {
     const LinkButton = {
       marginBottom: '15px'
     };
+    const Title = {
+      marginBottom: '15px'
+    };
 
     return (
       <div id="home" style={PageStyle}>
+        <div className="data" style={Title}>VoteChain</div>
         <div style={LinkButton}>
           <Link to="/authorize">
             <button>Authorize</button>
