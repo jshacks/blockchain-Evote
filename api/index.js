@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
+const cors = require('cors');
 const nbv = require("./jsbn/jsbn.js").nbv;
 const nbi = require("./jsbn/jsbn.js").nbi;
 const MongoClient = require('mongodb').MongoClient;
@@ -10,6 +11,7 @@ const uuidv4 = require('uuid/v4');
 var url = 'mongodb://admin:pickwick@ds227045.mlab.com:27045/evote';
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get('/', function(req, res) {
   res.send("hello world")
