@@ -6,12 +6,23 @@ const nbi = require("./jsbn/jsbn.js").nbi;
 const MongoClient = require('mongodb').MongoClient;
 const paillier = require("./jsbn/pailier.js").paillier;
 const BigInteger = require("./jsbn/jsbn.js").BigInteger;
+const uuidv4 = require('uuid/v4');
 var url = 'mongodb://admin:pickwick@ds227045.mlab.com:27045/evote';
 
 app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
   res.send("hello world")
+});
+
+app.get('/credentials', function(req, res) {
+  const publicKey = uuidv4();
+  const privateKey = uuidv4();
+
+  res.send({
+    'publicKey': publicKey,
+    'privateKey': privateKey
+  })
 });
 
 app.post('/encrypt-vote', function(req, res) {
