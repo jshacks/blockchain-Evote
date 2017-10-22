@@ -20,7 +20,7 @@ function api(contract) {
     app.use(bodyParser.urlencoded({ extended: true }));
     app.use(bodyParser.json());
 
-    var port = process.env.PORT || 3000;        // set our port
+    var port = 3001;        // set our port
 
 
     console.log ("API Contract: ", contract);
