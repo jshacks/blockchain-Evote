@@ -21,7 +21,9 @@ contract Election {
     }
 
     // state variable that stores a 'Voter' for each address
-    mapping(address => Voter) public voters; 
+    mapping(address => Voter) public votes; 
+
+    Voter[] public voters;
 
     // array of options/choices
     Choice[] public choices;
@@ -50,8 +52,10 @@ contract Election {
      */
     function addVoter(address targetVoter, bytes32[] _vote) internal {
        
+       Voter memory voter = Voter({ voterAddress: targetVoter, vote: _vote});
         // voters.length++;
-        voters[targetVoter] = Voter({ voterAddress: targetVoter, vote: _vote});
+        votes[targetVoter] = voter;
+        voters.push(voter);
         
     }
 
