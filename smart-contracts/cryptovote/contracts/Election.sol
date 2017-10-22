@@ -1,78 +1,81 @@
 pragma solidity ^0.4.11;
 
+
 contract Election {
 
-// STRUCT
-// =============================================================================
+    uint electionId = 0;
+    uint startDate;
+    uint endDate;
+    uint answers; // for multiple choice
 
-struct Choice {
-    bytes32 choiceID;
-    bytes32 name;
-}
-
-struct Voter {
-    bytes32 vAddress;
-    bool vHasVoted;
-    bytes32[] vChoices;
-}
-
-// VARIABLES
-// =============================================================================
- 
-  // mapping (bytes32 => uint8) public votesReceived;
-
-  bytes32[] candidateList;
-  bytes32 ID;
-  uint startDate;
-  uint endDate;
-  bytes32[] choices;
-  int8 answers; 
-  bytes32  vAddress;
-  Voter voter; 
-  
-  mapping (address => Voter) public votes; 
-    
-// CONSTRUCTOR
-// =============================================================================
-
-  function Election(bytes32[] candidateNames, bytes32 electionID, uint start, uint end, bytes32[] validChoices, int8 validAnswers) {
-    candidateList = candidateNames;
-    ID = electionID;
-    startDate = start;
-    endDate = end;
-    choices = validChoices;
-    answers = validAnswers;
-  }
-
- 
-// VOTE
-// =============================================================================
-
-  function vote(bytes32[] choices) {
-      address sender = msg.sender;
-      if (!votes[sender].vHasVoted) {
-          votes[sender].vChoices = choices;
-     }
-  }
-
-  /* function totalVotesFor(bytes32 candidate) returns (uint8) {
-    if (validCandidate(candidate) == false) throw;
-    return votesReceived[candidate];
-  }
-
-  // This function increments the vote count for the specified candidate. This
-  // is equivalent to casting a vote
-  function voteForCandidate(bytes32 candidate) {
-    if (validCandidate(candidate) == false) throw;
-    votesReceived[candidate] += 1;
-  }
-
-  function validCandidate(bytes32 candidate) returns (bool) {
-    for(uint i = 0; i < candidateList.length; i++) {
-      if (candidateList[i] == candidate) {
-        return true;
-      }
+    struct Choice {
+        uint choiceId;
+        bytes32 name;
     }
-    return false;
-  } */
+
+    // struct that represents a voter
+    struct Voter {
+        // bool hasVoted;
+        address voterAddress; // identifier of a voter
+        bytes32[] vote;//Choice[] vote; // chosen option(s)
+    }
+
+    // state variable that stores a 'Voter' for each address
+    mapping(address => Voter) public voters; 
+
+    // array of options/choices
+    Choice[] public choices;
+
+    function Election(bytes32[] choicesNames, uint elId, uint start, uint end) {
+        electionId = elId;
+        startDate = start;
+        endDate = end;
+
+        for (uint i = 0; i < choicesNames.length; i++) {
+            Choice memory newChoice = Choice({
+                choiceId: i,
+                name: choicesNames[i]
+            });
+            choices.push(newChoice);
+        }
+
+    }
+
+    /**
+     * Add voter
+     *
+     * Make `targetVoter` a voter named `voterName`
+     *
+     * @param targetVoter ethereum address to be added
+     */
+    function addVoter(address targetVoter, bytes32[] _vote) internal {
+       
+        // voters.length++;
+        voters[targetVoter] = Voter({ voterAddress: targetVoter, vote: _vote});
+        
+    }
+
+    
+
+
+    function castVote(bytes32[] choiceVote) public {
+        // Voter memory voter = voters[msg.sender];
+        // from docs: 
+        // If the argument of `require` evaluates to `false`,
+        // it terminates and reverts all changes to
+        // the state and to Ether balances. It is often
+        // a good idea to use this if functions are
+        // called incorrectly. But watch out, this
+        // will currently also consume all provided gas
+        // (this is planned to change in the future).
+        // require(!sender.hasVoted);
+        // sender.hasVoted = true;
+        // voter.vote = choiceVote;
+
+        addVoter(msg.sender, choiceVote);
+
+        
+    }
+
+
 }
