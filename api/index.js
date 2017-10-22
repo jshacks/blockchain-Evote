@@ -51,8 +51,9 @@ app.post('/encrypt-vote', function(req, res) {
       });
 
       //now add all cryptos
-      let final;
+      let final, finalChoices=[];
       choices.forEach(function(c) {
+        finalChoices.push(c.toString())
         if(!final) {
           final = c;
           return;
@@ -60,7 +61,7 @@ app.post('/encrypt-vote', function(req, res) {
         final = keys.pub.add(final,c);
       });
 
-      let result = final.toString();
+      let result = finalChoices;
 
       res.send({result});
     });
